@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi:set ft=ruby sw=2 ts=2 sts=2:
+
+
+# https://www.vagrantup.com/docs/vagrantfile/machine_settings
+
+NUM_HOSTS = 1
+IP_NW = "192.168.5."
+HOST_IP_START = 10
+
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.box_check_update = false
+
+
+  # Provision ubuntu Nodes
+  (1..NUM_HOSTS).each do |i|
+      config.vm.define "ubuntu-#{i}" do |node|
+        # Name shown in the GUI
+        node.vm.provider "virtualbox" do |vb|
+            vb.name = "ubuntu-#{i}"
+            vb.memory = 2048
+            vb.cpus = 2
+        end
+        node.vm.hostname = "ubuntu-#{i}"
+        node.vm.network :private_network, ip: IP_NW + "#{HOST_IP_START + i}"
+        node.vm.network "forwarded_port", guest: 22, host: "#{2710 + i}"
+
+        node.vm.provision "setup-hosts", :type => "shell", :path => "ubuntu/vagrant/setup-hosts.sh" do |s|
+          s.args = ["enp0s8"]
+        end
+
+        node.vm.provision "setup-dns", type: "shell", :path => "ubuntu/update-dns.sh"
+      end
+  end
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "../../ansible-playbooks/plays/webservers.yml"
+    ansible.inventory_path = "../../ansible-playbooks/inventory/vagrant.ini"
+    # ansible.groups = {
+    #   "base" => ["ubuntu-1"]
+    # }
+  end
+end
+
+

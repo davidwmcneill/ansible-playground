@@ -1,0 +1,5 @@
+.idea
+ubuntu-bionic*.log
+.vagrant
+temp
+.vault_pass
