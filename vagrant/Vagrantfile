@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "v"
-    ansible.playbook = "../../ansible-playbooks/plays/webservers.yml"
+    ansible.playbook = "../../ansible-playbooks/plays/docker.yml"
     ansible.inventory_path = "../../ansible-playbooks/inventory/vagrant.ini"
     # ansible.groups = {
     #   "base" => ["ubuntu-1"]
