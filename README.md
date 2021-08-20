@@ -16,6 +16,27 @@ brew reinstall --cask vagrant
 Install Ansible:
 TODO (pip)
 
+
+[Vagrant host Manager](https://github.com/devopsgroup-io/vagrant-hostmanager) is a useful plugin for managing the ```hosts``` file on the guest and optionally the host.
+
+Installation
+```al
+vagrant plugin install vagrant-hostmanager
+```
+Usage:
+```al
+vagrant hostmanager
+```
+
+Note the following configuration in the Vagrant file:
+```al
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.hostmanager.manage_guest = true
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline = true
+```
+
 # Basic usage
 
 See Makefile for full details of setup; including the management of external roles and collections

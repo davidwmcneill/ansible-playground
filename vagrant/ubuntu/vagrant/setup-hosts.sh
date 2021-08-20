@@ -7,8 +7,8 @@ sed -e "s/^.*${HOSTNAME}.*/${ADDRESS} ${HOSTNAME} ${HOSTNAME}.local/" -i /etc/ho
 # remove ubuntu-bionic entry
 sed -e '/^.*ubuntu-bionic.*/d' -i /etc/hosts
 
-# Update /etc/hosts about other hosts
-cat >> /etc/hosts <<EOF
-192.168.5.11  ubuntu-1
+# # Update /etc/hosts about other hosts
+# cat >> /etc/hosts <<EOF
+# 192.168.5.11  ubuntu-1
 
 EOF

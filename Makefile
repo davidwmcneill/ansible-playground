@@ -1,5 +1,6 @@
 SHELL := /bin/bash
 
+OS=r
 
 role_update:
 	../ansible-playbooks/extensions/setup/role_update.sh
