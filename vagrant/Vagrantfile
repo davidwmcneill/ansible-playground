@@ -22,8 +22,8 @@ os = {
     :host_ip_start => 10,
     :port_start => 2710
   },
-  "rhel7" => { 
-    :image => "generic/rhel7", 
+  "rhel8" => { 
+    :image => "generic/rhel8", 
     :cpus => 1, 
     :mem => 1024,
     :num_hosts => 1,
@@ -42,7 +42,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = false
   
-  # Provision ubuntu nodes
+  # Provision nodes based on OS map
     os.each_with_index do |(hostname, info), index|
       (1..info[:num_hosts]).each do |i|
         config.vm.define hostname + "-#{i}" do |cfg|
@@ -68,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "v"
-    ansible.playbook = "../../ansible-playbooks/plays/docker.yml"
+    ansible.playbook = "../../ansible-playbooks/plays/webservers.yml"
     ansible.inventory_path = "../../ansible-playbooks/inventory/vagrant.ini"
     # ansible.groups = {
     #   "base" => ["ubuntu-1"]
