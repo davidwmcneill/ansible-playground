@@ -1,0 +1,65 @@
+# -*- mode: ruby -*-
+# vi:set ft=ruby sw=2 ts=2 sts=2:
+
+
+# https://www.vagrantup.com/docs/vagrantfile/machine_settings
+VAGRANTFILE_API_VERSION = "2"
+IP_NW = "192.168.5."
+
+
+
+# Image options: 
+# https://roboxes.org/
+# https://app.vagrantup.com/ubuntu
+# https://app.vagrantup.com/boxes/search
+
+os = {
+  "rhel8" => { 
+    :image => "generic/rhel8", 
+    :cpus => 1, 
+    :mem => 1024,
+    :num_hosts => 1,
+    :host_ip_start => 50,
+    :port_start => 2750
+  }
+}
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  
+  config.vm.box_check_update = false
+
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.hostmanager.manage_guest = false
+  config.hostmanager.ignore_private_ip = false
+  config.hostmanager.include_offline = false
+  
+  # Provision nodes based on OS map
+    os.each_with_index do |(hostname, info), index|
+      (1..info[:num_hosts]).each do |i|
+        config.vm.define hostname + "-#{i}" do |cfg|
+          cfg.vm.provider :virtualbox do |vb, override|
+            config.vm.box = info[:image]
+            override.vm.hostname = hostname + "-#{i}"
+            override.vm.network :private_network, ip: IP_NW + "#{info[:host_ip_start] + i}"
+            override.vm.network "forwarded_port", guest: 22, host: "#{info[:port_start] + i}"
+            vb.name = hostname + "-#{i}"
+            vb.memory = info[:mem]
+            vb.cpus = info[:cpus]
+          end #end provider
+        end #end config
+      end #end count loop
+    end #end os
+
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "../../../ansible-playbooks/plays/gitlab.yml"
+    ansible.inventory_path = "../../../ansible-playbooks/inventory/vagrant.ini"
+    # ansible.groups = {
+    #   "base" => ["ubuntu-1"]
+    # }
+  end
+end
+
+

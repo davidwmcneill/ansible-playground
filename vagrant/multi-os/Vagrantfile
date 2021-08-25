@@ -14,7 +14,7 @@ IP_NW = "192.168.5."
 # https://app.vagrantup.com/boxes/search
 
 os = {
-  "ubuntu2004" => { 
+  "multi-ubuntu2004" => { 
     :image => "ubuntu/focal64", 
     :cpus => 1, 
     :mem => 1024,
@@ -22,7 +22,7 @@ os = {
     :host_ip_start => 10,
     :port_start => 2710
   },
-  "rhel8" => { 
+  "multi-rhel8" => { 
     :image => "generic/rhel8", 
     :cpus => 1, 
     :mem => 1024,
@@ -68,8 +68,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.verbose = "v"
-    ansible.playbook = "../../ansible-playbooks/plays/webservers.yml"
-    ansible.inventory_path = "../../ansible-playbooks/inventory/vagrant.ini"
+    ansible.playbook = "../../../ansible-playbooks/plays/webservers.yml"
+    ansible.inventory_path = "../../../ansible-playbooks/inventory/vagrant.ini"
     # ansible.groups = {
     #   "base" => ["ubuntu-1"]
     # }
